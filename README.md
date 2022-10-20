@@ -17,7 +17,7 @@ The default installation directory is fine (it should default to `C:\Program Fil
 something similar).
 
 Once installed, Keil must be configured to actually USE the compiler rather than default to it's own installed one. So, 
-open the "Manage Project Items" menu, select "Folders/Extensions", and select "Use GCC Compiler (GNU) for ARM Projects". 
+open the "Manage Project Items" menu, select "Folders/Extensions", and enable "Use GCC Compiler (GNU) for ARM Projects". 
 Then, point Keil to the recently installed directory folder where the recently installed toolchain is.
 
 ### Fiddly Shenanigans
@@ -43,7 +43,7 @@ the fix is easy: add the following code snippet to at least one of your files (p
 
 #### C file fix
 `
-void exit(int) {};
+void _exit(int) {};
 `
 
 

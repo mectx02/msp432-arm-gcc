@@ -1,20 +1,18 @@
-# GCC-ARM compiler with the MSP432P401R
+# GCC-ARM compiler with the MSP432 family of boards
 
-If, like me, you want to use the GCC version of the ARM compiler for use with the MSP432P401R board, then 
+If, like me, you want to use the GCC version of the ARM compiler for use with the MSP432 board family, then 
 hopefully this guide will point you in the right direction and avoid all of the pitfalls that I've come across.
 
 
-## Setup
+## Setup with Keil
 
-While theoretically this could be done under environments other than Windows (such as Linux, and I intend to try that 
-out soon), right now I can only confirm these steps for Windows with Keil's uVision IDE (any version that supports the 
-GCC compiler, which should include the newest one). Therefore, this guide assumes that you are currently working under 
-Windows, with the intention of getting this compiler working with Keil uVision.
+This part of the guide assumes that you're working under Windows with Keil's uVision IDE. If you're looking for Linux, 
+skip down to the next major section.
 
 ### Installing the Toolchain
 First, download and install the `gcc-arm-none-eabi` tookit from [ARM's website](https://developer.arm.com/downloads/-/gnu-rm). 
 The default installation directory is fine (it should default to `C:\Program Files (x86)\GNU ARM Embedded Toolchain\[version]` or 
-something similar).
+something similar). I'd recommend adding it to the Windows PATH when its done installing.
 
 Once installed, Keil must be configured to actually USE the compiler rather than default to it's own installed one. So, 
 open the "Manage Project Items" menu, select "Folders/Extensions", and enable "Use GCC Compiler (GNU) for ARM Projects". 
@@ -54,9 +52,49 @@ void _exit(int) {};
 And that's it! Everything should just be able to compile (as long as you configured everything correctly, and you're using the 
 correct assembly directives [if coding in assembly]) and run on your MSP board without too much issue.
 
-## What's next?
 
-I don't know. Maybe getting it to work under Linux or something? But I think it should be able to just work without issue - 
-the only hard part under anything that's not an IDE is figuring out how to flash finished programs to the board. Still working 
-that one out.
 
+## Setup - roughing it with just the GCC compiler (Linux only!)
+
+Keil is likely a great piece of software for many since it doesn't require too much extra fiddly business to get it working. But if, 
+like me, you ***REALLY*** want to use something like vim when you code, then you might be interested in setting up something like this.
+
+### Installing pre-requisites
+
+Just like above, the GCC toolchain must be installed. If you're working under Linux (if you're on Windows, the best I can offer you is 
+Windows' WSL environment), then the best course of action would be to install the `arm-none-eabi-gcc` package from your package manager.
+(On ArchLinux and its derivatives, you'll want the following packages: `arm-none-eabi-binutils`, `arm-none-eabi-gcc`, and `arm-none-eabi-newlib`.
+This gets you all the packages that you're going to need installed to get this working. Can't necessarily speak for other distros of Linux,
+but I'd imagine it would be something similar to that.)
+
+In addition to installing the compiler, having a method for flashing the resulting programs to the board would be insanely helpful. TI 
+provides their own GUI interface called [Uniflash](https://www.ti.com/tool/UNIFLASH) which makes it really easy. The only requirement 
+for flashing to the board is that the files must be in either a `.bin` or a `.hex` format. (I'll get to that later.) If you're looking 
+for a command-line tool, [MSP430Flasher](https://www.ti.com/tool/MSP430-FLASHER) exists, but I wasn't able to get that to work too well.
+
+
+### Okay... now what?
+
+Seeing as Linux doesn't have too many good alternative IDEs for the MSP boards (there is TI's on IDE, but that's probably not why you're here),
+it would be a really good idea if there was just a base project to download and get started with...
+
+Oh wait!
+
+If you clone this repository, you should have all the default files necessary to just start programming. The `makefile` has some variables that 
+you might want to set before calling `make` in your project root, but you shouldn't need to mess with it too much - just change the board in use and 
+build the project!
+
+The `makefile` also has a command that allows creating a flashable output file: `make output`. The `makefile` itself has some output parameters 
+that can be modified if you really desire, but by default it spits out an `output.bin` file based on the `output.elf` created from calling `make`.
+
+
+
+## Is there anything else that might get added?
+
+At this point, probably not. Most of this project is now at the 'plug and play' level such that I'm probably not going to add anything more.
+I *might* do some setup for Windows, but seeing as I don't like that OS, that's not likely to happen.
+
+There's a better chance of me uploading some example code for the GCC compiler for newbs like myself to get a better understanding of how 
+GCC defers from the default ARM compiler in Keil, to be perfectly honest.
+
+At the very least, I hope this helps in your projects.

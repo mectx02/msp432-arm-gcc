@@ -40,9 +40,7 @@ something to do with the inbuilt library files of GCC not having that defined or
 the fix is easy: add the following code snippet to at least one of your files (preferably at the end):
 
 #### C file fix
-`
-void _exit(int) {};
-`
+`void _exit() {};`
 
 
 #### Assembly file fix
@@ -54,7 +52,7 @@ correct assembly directives [if coding in assembly]) and run on your MSP board w
 
 
 
-## Setup - roughing it with just the GCC compiler (Linux only!)
+## Setup the GCC Compiler on Linux 
 
 Keil is likely a great piece of software for many since it doesn't require too much extra fiddly business to get it working. But if, 
 like me, you ***REALLY*** want to use something like vim when you code, then you might be interested in setting up something like this.
@@ -62,39 +60,37 @@ like me, you ***REALLY*** want to use something like vim when you code, then you
 ### Installing pre-requisites
 
 Just like above, the GCC toolchain must be installed. If you're working under Linux (if you're on Windows, the best I can offer you is 
-Windows' WSL environment), then the best course of action would be to install the `arm-none-eabi-gcc` package from your package manager.
-(On ArchLinux and its derivatives, you'll want the following packages: `arm-none-eabi-binutils`, `arm-none-eabi-gcc`, and `arm-none-eabi-newlib`.
-This gets you all the packages that you're going to need installed to get this working. Can't necessarily speak for other distros of Linux,
-but I'd imagine it would be something similar to that.)
+Windows' WSL environment), then the best course of action would be to install the `arm-none-eabi-gcc` environment from your package manager.
+Typically this means installing `binutils`, `gcc`, and `newlib` packages from `arm-none-eabi`. (Package names vary by distribution, but 
+generally you will need these three packages.)
+
 
 In addition to installing the compiler, having a method for flashing the resulting programs to the board would be insanely helpful. TI 
 provides their own GUI interface called [Uniflash](https://www.ti.com/tool/UNIFLASH) which makes it really easy. The only requirement 
-for flashing to the board is that the files must be in either a `.bin` or a `.hex` format. (I'll get to that later.) If you're looking 
+for flashing to the board is that the files must be in either a `.bin` or a `.hex` format. (The makefile takes care of that for you.) If you're looking 
 for a command-line tool, [MSP430Flasher](https://www.ti.com/tool/MSP430-FLASHER) exists, but I wasn't able to get that to work too well.
 
 
 ### Okay... now what?
 
-Seeing as Linux doesn't have too many good alternative IDEs for the MSP boards (there is TI's on IDE, but that's probably not why you're here),
-it would be a really good idea if there was just a base project to download and get started with...
+Write code! You can either pick an assembly-based project or a C-based project by just opening up one of the files and typing into it. 
+C is a lot easier to program, but assembly helps provide a good understanding of what's going on under the hood.
 
-Oh wait!
+When you're ready to compile your project, call `make [asm, c]` and a `.elf` file should be produced. Then, create the desired output file 
+by calling `make [binary, ihex]`. 
 
-If you clone this repository, you should have all the default files necessary to just start programming. The `makefile` has some variables that 
-you might want to set before calling `make` in your project root, but you shouldn't need to mess with it too much - just change the board in use and 
-build the project!
+Want to reset building your project? `make clean` should clean out all output files as well as the build directory.
 
-The `makefile` also has a command that allows creating a flashable output file: `make output`. The `makefile` itself has some output parameters 
-that can be modified if you really desire, but by default it spits out an `output.bin` file based on the `output.elf` created from calling `make`.
+If you ever forget the build commands, or you're just confused as to how to compile, just call `make help`.
 
 
 
 ## Is there anything else that might get added?
 
-At this point, probably not. Most of this project is now at the 'plug and play' level such that I'm probably not going to add anything more.
-I *might* do some setup for Windows, but seeing as I don't like that OS, that's not likely to happen.
+No. There might be some example code added, but that would be outside the original scope of this project, which was to provide the necessary 
+utilities in order to compile code for the MSP432 boards under Linux. Considering that I managed to add the ability to compile C code (which 
+I wasn't even initially considering), I'm calling this project finished for the most part. At this point, it's in a long-term maintenance mode.
 
-There's a better chance of me uploading some example code for the GCC compiler for newbs like myself to get a better understanding of how 
-GCC defers from the default ARM compiler in Keil, to be perfectly honest.
+However, if you feel that there's an improvement that you can make to this, feel free to add a pull request.
 
-At the very least, I hope this helps in your projects.
+I hope this helps you in your projects.
